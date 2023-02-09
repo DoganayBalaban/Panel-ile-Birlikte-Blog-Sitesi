@@ -16,6 +16,9 @@ import (
 type Dashboard struct{}
 
 func (dashboard Dashboard) Index(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	if !helpers.CheckUser(w, r) {
+		return
+	}
 	view, err := template.ParseFiles(helpers.Include("dashboard/list")...)
 	if err != nil {
 		fmt.Println(err)
@@ -28,6 +31,9 @@ func (dashboard Dashboard) Index(w http.ResponseWriter, r *http.Request, params 
 }
 
 func (dashboard Dashboard) NewItem(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	if !helpers.CheckUser(w, r) {
+		return
+	}
 	view, err := template.ParseFiles(helpers.Include("dashboard/add")...)
 	if err != nil {
 		fmt.Println(err)
@@ -36,6 +42,9 @@ func (dashboard Dashboard) NewItem(w http.ResponseWriter, r *http.Request, param
 }
 
 func (dashboard Dashboard) Add(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	if !helpers.CheckUser(w, r) {
+		return
+	}
 	title := r.FormValue("blog-title")
 	slug := slug.Make(title)
 	description := r.FormValue("blog-desc")
@@ -74,12 +83,18 @@ func (dashboard Dashboard) Add(w http.ResponseWriter, r *http.Request, params ht
 }
 
 func (dashboard Dashboard) Delete(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	if !helpers.CheckUser(w, r) {
+		return
+	}
 	post := models.Post{}.Get(params.ByName("id"))
 	post.Delete()
 	http.Redirect(w, r, "/admin", http.StatusSeeOther)
 }
 
 func (dashboard Dashboard) Edit(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	if !helpers.CheckUser(w, r) {
+		return
+	}
 	view, err := template.ParseFiles(helpers.Include("dashboard/edit")...)
 	if err != nil {
 		fmt.Println(err)
@@ -91,6 +106,9 @@ func (dashboard Dashboard) Edit(w http.ResponseWriter, r *http.Request, params h
 }
 
 func (dashboard Dashboard) Update(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	if !helpers.CheckUser(w, r) {
+		return
+	}
 	post := models.Post{}.Get(params.ByName("id"))
 	title := r.FormValue("blog-title")
 	slug := slug.Make(title)
