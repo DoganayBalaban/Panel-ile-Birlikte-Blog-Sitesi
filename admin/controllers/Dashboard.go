@@ -19,7 +19,11 @@ func (dashboard Dashboard) Index(w http.ResponseWriter, r *http.Request, params 
 	if !helpers.CheckUser(w, r) {
 		return
 	}
-	view, err := template.ParseFiles(helpers.Include("dashboard/list")...)
+	view, err := template.New("index").Funcs(template.FuncMap{
+		"getCategory": func(categoryID int) string {
+			return models.Category{}.Get(categoryID).Title
+		},
+	}).ParseFiles(helpers.Include("dashboard/list")...)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -38,7 +42,9 @@ func (dashboard Dashboard) NewItem(w http.ResponseWriter, r *http.Request, param
 	if err != nil {
 		fmt.Println(err)
 	}
-	view.ExecuteTemplate(w, "index", nil)
+	data := make(map[string]interface{})
+	data["Categories"] = models.Category{}.GetAll()
+	view.ExecuteTemplate(w, "index", data)
 }
 
 func (dashboard Dashboard) Add(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
@@ -102,6 +108,7 @@ func (dashboard Dashboard) Edit(w http.ResponseWriter, r *http.Request, params h
 	}
 	data := make(map[string]interface{})
 	data["Post"] = models.Post{}.Get(params.ByName("id"))
+	data["Categories"] = models.Category{}.GetAll()
 	view.ExecuteTemplate(w, "index", data)
 }
 

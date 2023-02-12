@@ -21,7 +21,7 @@
     <th scope="row">{{ $value.ID }}</th>
     <td><img width="80px" src="{{ $value.Picture_url }}" alt=""></td>
     <td>{{ $value.Title }}</td>
-    <td>{{ $value.CategoryID }}</td>
+    <td>{{ getCategory $value.CategoryID }}</td>
     <td>{{ $value.CreatedAt }}</td>
     <td>
       <a href="/admin/edit/{{ $value.ID }}"class="btn btn btn-outline-warning"><i class="fa fa-pen"></i> </a>
