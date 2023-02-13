@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/julienschmidt/httprouter"
 	admin "goblog/admin/controllers"
+	site "goblog/site/controllers"
 	"net/http"
 )
 
@@ -24,8 +25,13 @@ func Routes() *httprouter.Router {
 	r.GET("/admin/login", admin.Userops{}.Index)
 	r.POST("/admin/do_login", admin.Userops{}.Login)
 	r.GET("/admin/logout", admin.Userops{}.Logout)
+	//SITE
+	//Homepage
+	r.GET("/", site.Homepage{}.Index)
+	r.GET("/yazilar/:slug", site.Homepage{}.Detail)
 	//SERVE FILES
 	r.ServeFiles("/admin/assets/*filepath", http.Dir("admin/assets"))
 	r.ServeFiles("/uploads/*filepath", http.Dir("uploads"))
+	r.ServeFiles("/assets/*filepath", http.Dir("site/assets"))
 	return r
 }
